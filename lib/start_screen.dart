@@ -27,6 +27,8 @@ class _StartScreenState extends State<StartScreen> {
 
   int _currentIndex = 0;
 
+  List<String> listBottomBar = ["Главная", "Сообщения", "Врачи"];
+
   void _onItemTipped(int index) {
     setState(() {
       _currentIndex = index;
@@ -38,7 +40,8 @@ class _StartScreenState extends State<StartScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text("AppBar"),
+        centerTitle: true,
+        title: Text(listBottomBar[_currentIndex]),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SafeArea(
