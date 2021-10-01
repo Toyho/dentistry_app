@@ -1,5 +1,5 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:dentistry_app/resources/image_res.dart';
+import 'package:dentistry_app/resources/images_res.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey.shade300,
+      color: Colors.white,
       child: Stack(
         children: [
           CustomPaint(
@@ -27,15 +27,15 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: Colors.transparent,
             body: ListView(
               children: [
-                SizedBox(
-                  width: 140,
-                  height: 140,
-                  child: Image.asset(ImageRes.mainLogo),
+                Image.asset(
+                  ImageRes.mainLogo,
+                  height: 150,
+                  width: 150,
                 ),
                 Align(
                   alignment: Alignment.center,
                   child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: EdgeInsets.only(bottom: 8),
                       child: Text(
                         "Dentistry",
                         style: Theme.of(context).textTheme.headline4!.copyWith(
@@ -45,11 +45,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       )),
                 ),
                 Container(
-                  margin: EdgeInsets.all(8.0),
+                  margin: EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24.0),
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Color.fromRGBO(36, 137, 179, 1),
+                            blurRadius: 30,
+                            offset: Offset(0, 10))
+                      ]),
                   padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: [
@@ -76,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Align(
                           alignment: Alignment.centerRight,
                           child: GestureDetector(
-                            onTap: (){},
+                            onTap: () {},
                             child: Text(
                               "Забыли пароль?",
                               style: TextStyle(
@@ -95,7 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         textColor: Colors.white,
                         child: Text("Авторизироваться"),
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/start_screen');
+                          Navigator.pushReplacementNamed(
+                              context, '/start_screen');
                         },
                       ),
                       SizedBox(height: 10.0),
@@ -124,24 +130,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 10.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Нет аккаунта?"),
-                    SizedBox(width: 10.0),
-                    GestureDetector(
-                      onTap: (){},
-                      child: Text(
-                        "Зарегистрируйтесь",
-                        style: TextStyle(
-                          color: Color.fromRGBO(36, 137, 179, 1),
-                          fontWeight: FontWeight.w500,
-                          decoration: TextDecoration.underline,
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Нет аккаунта?"),
+                      SizedBox(width: 10.0),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Text(
+                          "Зарегистрируйтесь",
+                          style: TextStyle(
+                            color: Color.fromRGBO(36, 137, 179, 1),
+                            fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

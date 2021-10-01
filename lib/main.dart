@@ -1,5 +1,6 @@
 import 'package:dentistry_app/login_screen.dart';
 import 'package:dentistry_app/start_screen.dart';
+import 'package:dentistry_app/theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,9 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: lightThemeData(context),
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginScreen(),
