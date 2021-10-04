@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:dentistry_app/doctors_screen.dart';
-import 'package:dentistry_app/login_screen.dart';
-import 'package:dentistry_app/register_screen.dart';
 import 'package:dentistry_app/resources/colors_res.dart';
+import 'package:dentistry_app/technical_work.dart';
 import 'package:flutter/material.dart';
+
+import 'main_screen.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({Key? key}) : super(key: key);
@@ -49,8 +50,8 @@ class _StartScreenState extends State<StartScreen> {
         child: IndexedStack(
           index: _currentIndex,
           children: const [
-            RegisterScreen(),
-            LoginScreen(),
+            MainScreen(),
+            TechnicalWork(),
             DoctorsScreen()
           ],
         ),
@@ -60,7 +61,7 @@ class _StartScreenState extends State<StartScreen> {
           children: [
             UserAccountsDrawerHeader(
               decoration:
-                  BoxDecoration(color: Color.fromRGBO(36, 137, 179, 1.0)),
+                  BoxDecoration(color: Theme.of(context).primaryColor),
               accountEmail: null,
               accountName: Text("Имя пациента"),
               currentAccountPicture: ClipOval(

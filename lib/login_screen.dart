@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         "Dentistry",
                         style: Theme.of(context).textTheme.headline4!.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(36, 137, 179, 1),
+                              color: Theme.of(context).primaryColor,
                             ),
                       )),
                 ),
@@ -49,9 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24.0),
-                      boxShadow: const [
+                      boxShadow: [
                         BoxShadow(
-                            color: Color.fromRGBO(36, 137, 179, 1),
+                            color: Theme.of(context).primaryColor,
                             blurRadius: 30,
                             offset: Offset(0, 10))
                       ]),
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "Email",
-                            focusColor: Color.fromRGBO(36, 137, 179, 1)),
+                            focusColor: Theme.of(context).primaryColor),
                       ),
                       SizedBox(height: 10.0),
                       TextField(
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "Пароль",
-                            focusColor: Color.fromRGBO(36, 137, 179, 1)),
+                            focusColor: Theme.of(context).primaryColor),
                       ),
                       SizedBox(height: 10.0),
                       Align(
@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               "Забыли пароль?",
                               style: TextStyle(
-                                color: Color.fromRGBO(36, 137, 179, 1),
+                                color: Theme.of(context).primaryColor,
                                 fontWeight: FontWeight.w500,
                                 decoration: TextDecoration.underline,
                               ),
@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: EdgeInsets.all(16.0),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0)),
-                        color: Color.fromRGBO(36, 137, 179, 1),
+                        color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         child: Text("Авторизироваться"),
                         onPressed: () {
@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           "Зарегистрируйтесь",
                           style: TextStyle(
-                            color: Color.fromRGBO(36, 137, 179, 1),
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.w500,
                             decoration: TextDecoration.underline,
                           ),
