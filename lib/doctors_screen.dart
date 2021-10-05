@@ -89,7 +89,9 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
           child: Row(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(24), bottomLeft: Radius.circular(24)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    bottomLeft: Radius.circular(24)),
                 child: Hero(
                   tag: 'image_doctor_$index',
                   child: Image.network(
@@ -108,22 +110,30 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 14),
-                      child: Text("Иванов Иван Иванович", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                      child: Hero(
+                          tag: 'fio_doctor_$index',
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Text(
+                              "Иванов Иван Иванович",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          )),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 14),
                       child: RichText(
                           text: TextSpan(
-                            text: "Врач-стоматолог",
-                            style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        text: "Врач-стоматолог",
+                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               color: Colors.black54,
                               fontSize: 14,
                             ),
-                            children: const <TextSpan>[
-                              TextSpan(text: "\nСтаж: 4 года"),
-                            ],
-                          )
-                      ),
+                        children: const <TextSpan>[
+                          TextSpan(text: "\nСтаж: 4 года"),
+                        ],
+                      )),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 14, top: 8),
