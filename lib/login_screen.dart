@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:dentistry_app/resources/images_res.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
@@ -13,8 +14,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final fb = FirebaseDatabase.instance;
+
   @override
   Widget build(BuildContext context) {
+    final ref = fb.reference();
     return Container(
       color: Colors.white,
       child: Stack(

@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dentistry_app/doctors.dart';
 import 'package:dentistry_app/resources/images_res.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 
 class DoctorsScreen extends StatefulWidget {
@@ -16,11 +20,21 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
   @override
   void initState() {
     super.initState();
+    _activateListeners();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  final _database = FirebaseDatabase.instance.reference();
+
+  void _activateListeners() {
+    _database.child("doctors").onValue.listen((event) {
+      dynamic value = event.snapshot.value;
+      List<dynamic> doctors = value.map((i) => Doctors.fromJson(i)).toList();
+    });
   }
 
   @override
@@ -43,11 +57,22 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
               ],
             ),
           ),
-          body: TabBarView(
-            children: [
-              Dentists(),
-              Orthopedists(),
-            ],
+          body: FutureBuilder(
+            future: getData(),
+            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                print(snapshot.data);
+                return TabBarView(
+                  children: [
+                    Dentists(),
+                    Orthopedists(),
+                  ],
+                );
+              } else if (snapshot.connectionState == ConnectionState.none) {
+                return Text("No data");
+              }
+              return CircularProgressIndicator();
+            },
           ),
         ));
   }
@@ -163,5 +188,13 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
             ],
           )),
     );
+  }
+
+  Future<DocumentSnapshot> getData() async {
+    await Firebase.initializeApp();
+    return await FirebaseFirestore.instance
+        .collection("doctors")
+        .doc("1")
+        .get();
   }
 }

@@ -2,11 +2,14 @@
 import 'package:dentistry_app/login_screen.dart';
 import 'package:dentistry_app/start_screen.dart';
 import 'package:dentistry_app/theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'detail_info_doctor.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
