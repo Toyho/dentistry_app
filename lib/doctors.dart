@@ -11,12 +11,10 @@ class DoctorsList {
 }
 
   DoctorsList.fromJson(dynamic json) {
-    if (json['doctors'] != null) {
       _doctors = [];
-      json['doctors'].forEach((v) {
+      json.forEach((v) {
         _doctors?.add(Doctors.fromJson(v));
       });
-    }
   }
 
   Map<String, dynamic> toJson() {

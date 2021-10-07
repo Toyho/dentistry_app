@@ -20,7 +20,6 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
   @override
   void initState() {
     super.initState();
-    _activateListeners();
   }
 
   @override
@@ -29,13 +28,6 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
   }
 
   final _database = FirebaseDatabase.instance.reference();
-
-  void _activateListeners() {
-    _database.child("doctors").onValue.listen((event) {
-      dynamic value = event.snapshot.value;
-      List<dynamic> doctors = value.map((i) => Doctors.fromJson(i)).toList();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,18 +49,19 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
               ],
             ),
           ),
-          body: FutureBuilder(
-            future: getData(),
-            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                print(snapshot.data);
+          body: StreamBuilder(
+            stream: _database.child("doctors").onValue,
+            builder: (context, snapshot) {
+              DoctorsList doctors;
+              if (snapshot.hasData) {
+                doctors = DoctorsList.fromJson((snapshot.data! as Event).snapshot.value);
                 return TabBarView(
                   children: [
-                    Dentists(),
-                    Orthopedists(),
+                    Dentists(doctors),
+                    Orthopedists(doctors),
                   ],
                 );
-              } else if (snapshot.connectionState == ConnectionState.none) {
+              } else if (snapshot.hasError) {
                 return Text("No data");
               }
               return CircularProgressIndicator();
@@ -77,25 +70,25 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
         ));
   }
 
-  Widget Dentists() {
+  Widget Dentists(DoctorsList doctors) {
     return ListView.builder(
-      itemCount: 6,
+      itemCount: doctors.doctors!.length,
       itemBuilder: (BuildContext context, int index) {
-        return doctorCard(index);
+        return doctorCard(index, doctors.doctors![index]);
       },
     );
   }
 
-  Widget Orthopedists() {
+  Widget Orthopedists(DoctorsList doctors) {
     return ListView.builder(
-      itemCount: 6,
+      itemCount: doctors.doctors!.length,
       itemBuilder: (BuildContext context, int index) {
-        return doctorCard(index);
+        return doctorCard(index, doctors.doctors![index]);
       },
     );
   }
 
-  Widget doctorCard(int index) {
+  Widget doctorCard(int index, Doctors doctor) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/detail_info_doctor/$index');
@@ -140,7 +133,7 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
                           child: Material(
                             color: Colors.transparent,
                             child: Text(
-                              "Иванов Иван Иванович",
+                              doctor.name as String,
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
@@ -155,8 +148,8 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
                               color: Colors.black54,
                               fontSize: 14,
                             ),
-                        children: const <TextSpan>[
-                          TextSpan(text: "\nСтаж: 4 года"),
+                        children: <TextSpan>[
+                          TextSpan(text: "\nСтаж: ${doctor.experience} года"),
                         ],
                       )),
                     ),
