@@ -30,58 +30,87 @@ class _DetailInfoDoctorState extends State<DetailInfoDoctor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          pinned: true,
-          snap: false,
-          floating: false,
-          expandedHeight: 160.0,
-          centerTitle: true,
-          shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(140),
-                  bottomRight: Radius.circular(140))),
-          flexibleSpace: FlexibleSpaceBar(
-            title: Hero(
-                tag: 'fio_doctor_$index',
-                child: Material(
-                  color: Colors.transparent,
-                  child: Text(
-                    "Иванов Иван Иванович",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: double.infinity,
+        color: ColorsRes.fromHex(ColorsRes.primaryColor),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+              child: Column(
+                children: <Widget>[
+                  // Align(
+                  //     alignment: Alignment.topLeft,
+                  //     child: IconButton(
+                  //       icon: Icon(Icons.arrow_back_ios),
+                  //       color: ColorsRes.fromHex(ColorsRes.whiteColor),
+                  //       onPressed: () {
+                  //         Navigator.pop(context);
+                  //       },
+                  //     )),
+                  Center(
+                    child: Hero(
+                      tag: 'image_doctor_$index',
+                      child: CircleAvatar(
+                        radius: 68,
+                        backgroundColor:
+                            ColorsRes.fromHex(ColorsRes.whiteColor),
+                        child: CircleAvatar(
+                          radius: 64,
+                          backgroundImage: NetworkImage(
+                              "https://i.pinimg.com/736x/ef/83/c3/ef83c388247b4c5784e2ae9cea604fd2.jpg"),
+                        ),
+                      ),
+                    ),
                   ),
-                )),
-            background: CircleAvatar(
-              child: ClipOval(
-                child: Hero(
-                  tag: 'image_doctor_$index',
-                  child: Image.network(
-                    "https://i.pinimg.com/736x/ef/83/c3/ef83c388247b4c5784e2ae9cea604fd2.jpg",
-                    fit: BoxFit.cover,
-                    // height: 50,
-                    // width: 50,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Hero(
+                        tag: 'fio_doctor_$index',
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Text(
+                            "Иванов Иван Иванович",
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: ColorsRes.fromHex(ColorsRes.whiteColor)),
+                          ),
+                        )),
                   ),
-                ),
+                ],
               ),
             ),
-          ),
+            DraggableScrollableSheet(
+              builder: (context, scrollController) {
+                return Container(
+                  decoration: BoxDecoration(
+                      color: ColorsRes.fromHex(ColorsRes.whiteColor),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(40))),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                            "В 2004 году повышала свою квалификацию на факультете последипломного образования "
+                                "ГОУ ВПО КГМУ Минздрава России по эстетической терапии и медицинской косметологии "
+                                "(свидетельство о повышении квалификации, г. Курск).")
+                      ],
+                    ),
+                    controller: scrollController,
+                  ),
+                );
+              },
+              initialChildSize: 0.65,
+              minChildSize: 0.65,
+              maxChildSize: 1,
+            )
+          ],
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return Container(
-                color: index.isOdd ? Colors.white : Colors.black12,
-                height: 100.0,
-                child: Center(
-                  child: Text('$index', textScaleFactor: 5),
-                ),
-              );
-            },
-            childCount: 20,
-          ),
-        ),
-      ],
-    ));
+      ),
+    );
   }
 }
