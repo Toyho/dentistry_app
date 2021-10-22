@@ -3,9 +3,14 @@ import 'package:dentistry_app/resources/colors_res.dart';
 import 'package:dentistry_app/resources/images_res.dart';
 import 'package:flutter/material.dart';
 
-class TechnicalWork extends StatelessWidget {
+class TechnicalWork extends StatefulWidget {
   const TechnicalWork({Key? key}) : super(key: key);
 
+  @override
+  State<TechnicalWork> createState() => _TechnicalWorkState();
+}
+
+class _TechnicalWorkState extends State<TechnicalWork> with AutomaticKeepAliveClientMixin<TechnicalWork> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -21,4 +26,7 @@ class TechnicalWork extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -1,11 +1,10 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:dentistry_app/login_screen.dart';
-import 'package:dentistry_app/start_screen.dart';
+import 'package:dentistry_app/screens/detail_info_doctor.dart';
+import 'package:dentistry_app/screens/login_screen.dart';
+import 'package:dentistry_app/screens/start_screen.dart';
 import 'package:dentistry_app/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'detail_info_doctor.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +18,18 @@ class MyApp extends StatelessWidget {
   Widget _leftSideTransitionScreen(BuildContext context,
       Animation animation, Animation secondaryAnimation, Widget child) {
     const begin = Offset(1.0, 0.0);
+    const end = Offset.zero;
+    var curve = Curves.ease;
+    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+    final offsetAnimation = animation.drive(tween);
+    return SlideTransition(
+      position: offsetAnimation,
+      child: child,
+    );
+  }
+  Widget _rightSideTransitionScreen(BuildContext context,
+      Animation animation, Animation secondaryAnimation, Widget child) {
+    const begin = Offset(-1.0, 0.0);
     const end = Offset.zero;
     var curve = Curves.ease;
     var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
@@ -60,6 +71,17 @@ class MyApp extends StatelessWidget {
                 transitionDuration: Duration(milliseconds: 700),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) =>
                   _leftSideTransitionScreen(context, animation, secondaryAnimation, child),
+                settings: routeSettings,
+              );
+            }
+          case "logout":
+            {
+              return PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                const LoginScreen(),
+                transitionDuration: Duration(milliseconds: 200),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+                    _rightSideTransitionScreen(context, animation, secondaryAnimation, child),
                 settings: routeSettings,
               );
             }

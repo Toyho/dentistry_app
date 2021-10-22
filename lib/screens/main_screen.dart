@@ -17,7 +17,7 @@ class MainScreen extends StatefulWidget {
   }
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with AutomaticKeepAliveClientMixin<MainScreen> {
   static final LatLng _kMapCenter = LatLng(52.980137, 36.071302);
 
   static final CameraPosition _kInitialPosition =
@@ -46,6 +46,7 @@ class _MainScreenState extends State<MainScreen> {
                   child: SizedBox(
                     height: 220,
                     child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       itemCount: 7,
                       itemBuilder: (BuildContext context, int index) {
@@ -55,8 +56,12 @@ class _MainScreenState extends State<MainScreen> {
                           decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                  colors: [ColorsRes.fromHex(ColorsRes.primaryColor), Colors.white],),
+                                end: Alignment.bottomLeft,
+                                colors: [
+                                  ColorsRes.fromHex(ColorsRes.primaryColor),
+                                  Colors.white
+                                ],
+                              ),
                               borderRadius: BorderRadius.circular(24.0),
                               boxShadow: [
                                 BoxShadow(
@@ -67,13 +72,24 @@ class _MainScreenState extends State<MainScreen> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
-                                child: Text("Заголовок", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 12),
+                                child: Text(
+                                  "Заголовок",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
                               ),
                               Expanded(
                                 child: Align(
                                     alignment: Alignment.bottomCenter,
-                                    child: Image.asset(ImageRes.toothbrush, fit: BoxFit.fill, width: 200,)),
+                                    child: Image.asset(
+                                      ImageRes.toothbrush,
+                                      fit: BoxFit.fill,
+                                      width: 200,
+                                    )),
                               )
                             ],
                           ),
@@ -178,4 +194,7 @@ class _MainScreenState extends State<MainScreen> {
         .buffer
         .asUint8List();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

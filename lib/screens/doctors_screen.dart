@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dentistry_app/doctors.dart';
-import 'package:dentistry_app/resources/images_res.dart';
+import 'package:dentistry_app/models/doctors.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,7 +15,8 @@ class DoctorsScreen extends StatefulWidget {
   }
 }
 
-class _DoctorsScreenState extends State<DoctorsScreen> {
+class _DoctorsScreenState extends State<DoctorsScreen>
+    with AutomaticKeepAliveClientMixin<DoctorsScreen> {
   @override
   void initState() {
     super.initState();
@@ -54,7 +54,8 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
             builder: (context, snapshot) {
               DoctorsList doctors;
               if (snapshot.hasData) {
-                doctors = DoctorsList.fromJson((snapshot.data! as Event).snapshot.value);
+                doctors = DoctorsList.fromJson(
+                    (snapshot.data! as Event).snapshot.value);
                 return TabBarView(
                   children: [
                     Dentists(doctors),
@@ -64,7 +65,7 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
               } else if (snapshot.hasError) {
                 return Text("No data");
               }
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             },
           ),
         ));
@@ -190,4 +191,7 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
         .doc("1")
         .get();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

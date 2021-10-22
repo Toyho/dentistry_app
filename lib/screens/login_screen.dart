@@ -49,21 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                       )),
                 ),
-                // Container(
-                //   height: 100,
-                //   child: Swiper(
-                //     fade: 0,
-                //     itemBuilder: (BuildContext context, int index) {
-                //       return Container(
-                //         height: 60,
-                //         width: 90,
-                //         color: Colors.amberAccent,
-                //       );
-                //     },
-                //     itemCount: 2,
-                //
-                //   ),
-                // ),
                 Container(
                   margin: EdgeInsets.all(12.0),
                   decoration: BoxDecoration(

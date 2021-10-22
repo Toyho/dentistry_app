@@ -64,14 +64,15 @@ class _DetailInfoDoctorState extends State<DetailInfoDoctor> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  SizedBox(
+                    width: double.infinity,
                     child: Hero(
                         tag: 'fio_doctor_$index',
                         child: Material(
-                          color: Colors.transparent,
+                          type: MaterialType.transparency,
                           child: Text(
                             "Иванов Иван Иванович",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
