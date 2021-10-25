@@ -1,11 +1,16 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:dentistry_app/resources/images_res.dart';
+import 'package:dentistry_app/widgets/fade_indexed_stack.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final FirebaseDatabase fb = FirebaseDatabase.instance;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -15,11 +20,60 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final fb = FirebaseDatabase.instance;
+
+  final GlobalKey _formKey = GlobalKey();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  late bool _success;
+  late String _userEmail;
+  late final User? user;
+
+  Future<void> _register() async {
+    user = (await
+    _auth.createUserWithEmailAndPassword(
+      email: _emailController.text,
+      password: _passwordController.text,
+    )
+    ).user;
+    if (user != null) {
+      setState(() {
+        _success = true;
+        _userEmail = user!.email!;
+        fb.reference().child("users").child(user!.uid).set(
+          {
+            'email': _userEmail,
+            'password': _passwordController.text
+        }
+        );
+      });
+    } else {
+      setState(() {
+        _success = true;
+      });
+    }
+  }
+
+  Future<void> _signInWithEmailAndPassword() async {
+    final User? user = (await _auth.signInWithEmailAndPassword(
+      email: _emailController.text,
+      password: _passwordController.text,
+    )).user;
+
+    if (user != null) {
+      setState(() {
+        _success = true;
+        _userEmail = user.email!;
+      });
+    } else {
+      setState(() {
+        _success = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ref = fb.reference();
     return Container(
       color: Colors.white,
       child: Stack(
@@ -49,6 +103,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                       )),
                 ),
+                // FadeIndexedStack(
+                //   //this is optional
+                //   //duration: Duration(seconds: 1),
+                //   children: [
+                //     Container(
+                //       height: 30,
+                //       color: Colors.blueAccent,
+                //     ),
+                //     Container(
+                //       height: 50,
+                //       color: Colors.red,
+                //     ),
+                //   ],
+                //   index: 2,
+                // ),
                 Container(
                   margin: EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
@@ -69,6 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 20.0),
                       TextField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "Email",
@@ -76,6 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 10.0),
                       TextField(
+                        controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
@@ -104,7 +175,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         child: Text("Авторизироваться"),
-                        onPressed: () {
+                        onPressed: () async{
+                          await _signInWithEmailAndPassword();
                           Navigator.pushReplacementNamed(
                               context, '/start_screen');
                         },
@@ -143,7 +215,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text("Нет аккаунта?"),
                       SizedBox(width: 10.0),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, '/registr_screen');
+                        },
                         child: Text(
                           "Зарегистрируйтесь",
                           style: TextStyle(
