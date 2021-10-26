@@ -10,7 +10,7 @@ import 'dart:ui' as ui;
 import 'package:flutter_svg/svg.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-final FirebaseDatabase fb = FirebaseDatabase.instance;
+final FirebaseDatabase _fb = FirebaseDatabase.instance;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _success = true;
         _userEmail = user!.email!;
-        fb.reference().child("users").child(user!.uid).set(
+        _fb.reference().child("users").child(user!.uid).set(
           {
             'email': _userEmail,
             'password': _passwordController.text
@@ -215,10 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text("Нет аккаунта?"),
                       SizedBox(width: 10.0),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, '/registr_screen');
-                        },
+                        onTap: () {},
                         child: Text(
                           "Зарегистрируйтесь",
                           style: TextStyle(

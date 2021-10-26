@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:dentistry_app/models/push_notification.dart';
 import 'package:dentistry_app/screens/doctors_screen.dart';
 import 'package:dentistry_app/resources/colors_res.dart';
-import 'package:dentistry_app/screens/login_screen.dart';
 import 'package:dentistry_app/screens/technical_work.dart';
+import 'package:dentistry_app/widgets/message_notification.dart';
 import 'package:dentistry_app/widgets/oval_right_clipper.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 import 'main_screen.dart';
 
@@ -21,11 +24,18 @@ class _StartScreenState extends State<StartScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    registerNotification();
+    checkForInitialMessage();
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      PushNotification notification = PushNotification(
+        title: message.notification?.title,
+        body: message.notification?.body,
+      );
+      setState(() {
+        _notificationInfo = notification;
+        _totalNotifications++;
+      });
+    });
   }
 
   int _currentIndex = 0;
@@ -33,6 +43,74 @@ class _StartScreenState extends State<StartScreen> {
   List<String> listBottomBar = ["Главная", "Сообщения", "Врачи"];
 
   PageController pageController = PageController();
+
+  late final FirebaseMessaging _messaging;
+  int _totalNotifications = 0;
+  PushNotification? _notificationInfo;
+
+  Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    print("Handling a background message: ${message.messageId}");
+  }
+
+  void registerNotification() async {
+    _messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+
+      FirebaseMessaging.onBackgroundMessage(
+          _firebaseMessagingBackgroundHandler);
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        PushNotification notification = PushNotification(
+          title: message.notification?.title,
+          body: message.notification?.body,
+        );
+
+        setState(() {
+          _notificationInfo = notification;
+          _totalNotifications++;
+        });
+        if (_notificationInfo != null) {
+          showOverlayNotification((context) {
+            return MessageNotification(
+              message: 'i love you',
+              onReplay: () {
+                OverlaySupportEntry.of(context)!
+                    .dismiss(); //use OverlaySupportEntry to dismiss overlay
+                toast('you checked this message');
+              },
+            );
+          });
+        }
+      });
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
+  checkForInitialMessage() async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      PushNotification notification = PushNotification(
+        title: initialMessage.notification?.title,
+        body: initialMessage.notification?.body,
+      );
+      setState(() {
+        _notificationInfo = notification;
+        _totalNotifications++;
+      });
+    }
+  }
 
   void _onItemTipped(int index) {
     setState(() {
@@ -53,11 +131,7 @@ class _StartScreenState extends State<StartScreen> {
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
         controller: pageController,
-        children: const [
-          MainScreen(),
-          TechnicalWork(),
-          DoctorsScreen()
-        ],
+        children: const [MainScreen(), TechnicalWork(), DoctorsScreen()],
       ),
       // SafeArea(
       //   top: false,
@@ -77,8 +151,10 @@ class _StartScreenState extends State<StartScreen> {
         showUnselectedLabels: false,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Главная"),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: "Сообщения"),
-          BottomNavigationBarItem(icon: Icon(Icons.medical_services), label: "Врачи"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.message), label: "Сообщения"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.medical_services), label: "Врачи"),
         ],
         currentIndex: _currentIndex,
         onTap: _onItemTipped,
@@ -119,8 +195,10 @@ _buildDrawer(BuildContext context) {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                          colors: [ColorsRes.fromHex(ColorsRes.whiteColor), ColorsRes.fromHex(ColorsRes.primaryColor)])),
+                      gradient: LinearGradient(colors: [
+                        ColorsRes.fromHex(ColorsRes.whiteColor),
+                        ColorsRes.fromHex(ColorsRes.primaryColor)
+                      ])),
                   child: CircleAvatar(
                     radius: 50,
                     backgroundImage: NetworkImage(
@@ -137,13 +215,14 @@ _buildDrawer(BuildContext context) {
                 ),
                 Text(
                   "электронный_адрес@gmail.com",
-                  style: TextStyle(color: ColorsRes.fromHex(ColorsRes.whiteColor), fontSize: 16.0),
+                  style: TextStyle(
+                      color: ColorsRes.fromHex(ColorsRes.whiteColor),
+                      fontSize: 16.0),
                 ),
                 SizedBox(height: 30.0),
                 _buildRow(Icons.person_pin, "Мой профиль"),
                 _buildDivider(),
-                _buildRow(Icons.notifications, "Оповещения",
-                    showBadge: true),
+                _buildRow(Icons.notifications, "Оповещения", showBadge: true),
                 _buildDivider(),
                 _buildRow(Icons.settings, "Настройки"),
                 _buildDivider(),
@@ -164,10 +243,12 @@ Divider _buildDivider() {
   );
 }
 
-Widget _buildRow(IconData icon, String title, {bool showBadge = false, Function()? actionOnTab}) {
-  final TextStyle tStyle = TextStyle(color: ColorsRes.fromHex(ColorsRes.whiteColor), fontSize: 16.0);
+Widget _buildRow(IconData icon, String title,
+    {bool showBadge = false, Function()? actionOnTab}) {
+  final TextStyle tStyle =
+      TextStyle(color: ColorsRes.fromHex(ColorsRes.whiteColor), fontSize: 16.0);
   return InkWell(
-    onTap: actionOnTab ?? (){},
+    onTap: actionOnTab ?? () {},
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Row(children: [
