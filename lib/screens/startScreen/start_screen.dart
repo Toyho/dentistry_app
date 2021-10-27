@@ -1,15 +1,13 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:dentistry_app/models/push_notification.dart';
-import 'package:dentistry_app/screens/doctors_screen.dart';
+import 'package:dentistry_app/screens/doctors/doctorsList/doctors_screen.dart';
 import 'package:dentistry_app/resources/colors_res.dart';
+import 'package:dentistry_app/screens/startScreen/start_screen_view_model.dart';
 import 'package:dentistry_app/screens/technical_work.dart';
-import 'package:dentistry_app/widgets/message_notification.dart';
 import 'package:dentistry_app/widgets/oval_right_clipper.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:overlay_support/overlay_support.dart';
+import 'package:provider/provider.dart';
 
-import 'main_screen.dart';
+import '../main_screen.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({Key? key}) : super(key: key);
@@ -21,145 +19,50 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
+  StartScreenViewModel viewModel = StartScreenViewModel();
+
   @override
   void initState() {
     super.initState();
-    registerNotification();
-    checkForInitialMessage();
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      PushNotification notification = PushNotification(
-        title: message.notification?.title,
-        body: message.notification?.body,
-      );
-      setState(() {
-        _notificationInfo = notification;
-        _totalNotifications++;
-      });
-    });
-  }
-
-  int _currentIndex = 0;
-
-  List<String> listBottomBar = ["Главная", "Сообщения", "Врачи"];
-
-  PageController pageController = PageController();
-
-  late final FirebaseMessaging _messaging;
-  int _totalNotifications = 0;
-  PushNotification? _notificationInfo;
-
-  Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    print("Handling a background message: ${message.messageId}");
-  }
-
-  void registerNotification() async {
-    _messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      provisional: false,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-
-      FirebaseMessaging.onBackgroundMessage(
-          _firebaseMessagingBackgroundHandler);
-
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        PushNotification notification = PushNotification(
-          title: message.notification?.title,
-          body: message.notification?.body,
-        );
-
-        setState(() {
-          _notificationInfo = notification;
-          _totalNotifications++;
-        });
-        if (_notificationInfo != null) {
-          showOverlayNotification((context) {
-            return MessageNotification(
-              message: 'i love you',
-              onReplay: () {
-                OverlaySupportEntry.of(context)!
-                    .dismiss(); //use OverlaySupportEntry to dismiss overlay
-                toast('you checked this message');
-              },
-            );
-          });
-        }
-      });
-    } else {
-      print('User declined or has not accepted permission');
-    }
-  }
-
-  checkForInitialMessage() async {
-    RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
-
-    if (initialMessage != null) {
-      PushNotification notification = PushNotification(
-        title: initialMessage.notification?.title,
-        body: initialMessage.notification?.body,
-      );
-      setState(() {
-        _notificationInfo = notification;
-        _totalNotifications++;
-      });
-    }
-  }
-
-  void _onItemTipped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-    pageController.jumpToPage(index);
+    viewModel.initViewModel(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        title: Text(listBottomBar[_currentIndex]),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: PageView(
-        physics: NeverScrollableScrollPhysics(),
-        controller: pageController,
-        children: const [MainScreen(), TechnicalWork(), DoctorsScreen()],
-      ),
-      // SafeArea(
-      //   top: false,
-      //   child: IndexedStack(
-      //     index: _currentIndex,
-      //     children: const [
-      //       MainScreen(),
-      //       TechnicalWork(),
-      //       DoctorsScreen()
-      //     ],
-      //   ),
-      // ),
-      drawer: _buildDrawer(context),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        selectedItemColor: ColorsRes.fromHex(ColorsRes.whiteColor),
-        showUnselectedLabels: false,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Главная"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.message), label: "Сообщения"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.medical_services), label: "Врачи"),
-        ],
-        currentIndex: _currentIndex,
-        onTap: _onItemTipped,
-      ),
-    );
+    return ChangeNotifierProvider(
+        create: (context) => viewModel,
+        child: Consumer<StartScreenViewModel>(
+            builder: (context, viewModel, child) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              centerTitle: true,
+              title: Text(viewModel.listBottomBar[viewModel.currentIndex]),
+              backgroundColor: Theme.of(context).primaryColor,
+            ),
+            body: PageView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: viewModel.pageController,
+              children: const [MainScreen(), TechnicalWork(), DoctorsScreen()],
+            ),
+            drawer: _buildDrawer(context),
+            bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: Theme.of(context).primaryColor,
+              selectedItemColor: ColorsRes.fromHex(ColorsRes.whiteColor),
+              showUnselectedLabels: false,
+              items: const [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.home), label: "Главная"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.message), label: "Сообщения"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.medical_services), label: "Врачи"),
+              ],
+              currentIndex: viewModel.currentIndex,
+              onTap: viewModel.onItemTipped,
+            ),
+          );
+        }));
   }
 }
 
