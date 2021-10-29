@@ -1,16 +1,12 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:dentistry_app/resources/colors_res.dart';
 import 'package:dentistry_app/resources/images_res.dart';
-import 'package:dentistry_app/widgets/fade_indexed_stack.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:dentistry_app/screens/login/login_screen_view_model.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
-import 'package:flutter_svg/svg.dart';
-
-final FirebaseAuth _auth = FirebaseAuth.instance;
-final FirebaseDatabase _fb = FirebaseDatabase.instance;
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -20,220 +16,265 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
-  final GlobalKey _formKey = GlobalKey();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  late bool _success;
-  late String _userEmail;
-  late final User? user;
-
-  Future<void> _register() async {
-    user = (await
-    _auth.createUserWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    )
-    ).user;
-    if (user != null) {
-      setState(() {
-        _success = true;
-        _userEmail = user!.email!;
-        _fb.reference().child("users").child(user!.uid).set(
-          {
-            'email': _userEmail,
-            'password': _passwordController.text
-        }
-        );
-      });
-    } else {
-      setState(() {
-        _success = true;
-      });
-    }
-  }
-
-  Future<void> _signInWithEmailAndPassword() async {
-    final User? user = (await _auth.signInWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    )).user;
-
-    if (user != null) {
-      setState(() {
-        _success = true;
-        _userEmail = user.email!;
-      });
-    } else {
-      setState(() {
-        _success = false;
-      });
-    }
-  }
+  LoginScreenViewModel viewModel = LoginScreenViewModel();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Stack(
-        children: [
-          CustomPaint(
-            size: MediaQuery.of(context).size,
-            painter: RPSCustomPainter(),
-          ),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            body: ListView(
-              children: [
-                Image.asset(
-                  ImageRes.mainLogo,
-                  height: 150,
-                  width: 150,
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        "Dentistry",
-                        style: Theme.of(context).textTheme.headline4!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                      )),
-                ),
-                // FadeIndexedStack(
-                //   //this is optional
-                //   //duration: Duration(seconds: 1),
-                //   children: [
-                //     Container(
-                //       height: 30,
-                //       color: Colors.blueAccent,
-                //     ),
-                //     Container(
-                //       height: 50,
-                //       color: Colors.red,
-                //     ),
-                //   ],
-                //   index: 2,
-                // ),
-                Container(
-                  margin: EdgeInsets.all(12.0),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24.0),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Theme.of(context).primaryColor,
-                            blurRadius: 30,
-                            offset: Offset(0, 10))
-                      ]),
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Войдите в свой аккаунт",
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      SizedBox(height: 20.0),
-                      TextField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Email",
-                            focusColor: Theme.of(context).primaryColor),
-                      ),
-                      SizedBox(height: 10.0),
-                      TextField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Пароль",
-                            focusColor: Theme.of(context).primaryColor),
-                      ),
-                      SizedBox(height: 10.0),
-                      Align(
-                          alignment: Alignment.centerRight,
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: Text(
-                              "Забыли пароль?",
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
+    return ChangeNotifierProvider(
+      create: (context) => viewModel,
+      child:
+          Consumer<LoginScreenViewModel>(builder: (context, viewModel, child) {
+        return Container(
+          color: Colors.white,
+          child: Stack(
+            children: [
+              CustomPaint(
+                size: MediaQuery.of(context).size,
+                painter: RPSCustomPainter(),
+              ),
+              Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                              padding: EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                "Dentistry",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4!
+                                    .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                              )),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(20.0),
+                          child: Stack(
+                            children: <Widget>[
+                              ClipPath(
+                                clipper: RoundedDiagonalPathClipper(),
+                                child: Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.51,
+                                  padding: EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(40.0)),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topRight,
+                                      end: Alignment.bottomLeft,
+                                      colors: [
+                                        Colors.white,
+                                        ColorsRes.fromHex(
+                                            ColorsRes.primaryColor),
+                                      ],
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: 90.0,
+                                      ),
+                                      Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: TextField(
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18),
+                                            controller:
+                                                viewModel.emailController,
+                                            decoration: InputDecoration(
+                                                hintText: "Email",
+                                                hintStyle: TextStyle(
+                                                    color: Colors.white),
+                                                border: InputBorder.none,
+                                                icon: Icon(
+                                                  Icons.email,
+                                                  color: Colors.white,
+                                                )),
+                                          )),
+                                      Container(
+                                        child: Divider(
+                                          color: Colors.white,
+                                        ),
+                                        padding: EdgeInsets.only(
+                                            left: 20.0,
+                                            right: 20.0,
+                                            bottom: 10.0),
+                                      ),
+                                      Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: TextField(
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18),
+                                            controller:
+                                                viewModel.passwordController,
+                                            obscureText: true,
+                                            decoration: InputDecoration(
+                                                hintText: "Пароль",
+                                                hintStyle: TextStyle(
+                                                    color: Colors.white),
+                                                border: InputBorder.none,
+                                                icon: Icon(
+                                                  Icons.lock,
+                                                  color: Colors.white,
+                                                )),
+                                          )),
+                                      Container(
+                                        child: Divider(
+                                          color: Colors.white,
+                                        ),
+                                        padding: EdgeInsets.only(
+                                            left: 20.0,
+                                            right: 20.0,
+                                            bottom: 10.0),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 20.0),
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: GestureDetector(
+                                              onTap: () {},
+                                              child: Text(
+                                                "Забыли пароль?",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
+                                              ),
+                                            )),
+                                      ),
+                                      SizedBox(
+                                        height: 10.0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          )),
-                      SizedBox(height: 20.0),
-                      RaisedButton(
-                        padding: EdgeInsets.all(16.0),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0)),
-                        color: Theme.of(context).primaryColor,
-                        textColor: Colors.white,
-                        child: Text("Авторизироваться"),
-                        onPressed: () async{
-                          await _signInWithEmailAndPassword();
-                          Navigator.pushReplacementNamed(
-                              context, '/start_screen');
-                        },
-                      ),
-                      SizedBox(height: 10.0),
-                      Text(
-                        "Или авторизироваться с помощью:",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: SvgPicture.asset(ImageRes.facebookLogo),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: SvgPicture.asset(ImageRes.twitterLogo),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: SvgPicture.asset(ImageRes.vkLogo),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Нет аккаунта?"),
-                      SizedBox(width: 10.0),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Text(
-                          "Зарегистрируйтесь",
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.underline,
+                              Align(
+                                alignment: Alignment.center,
+                                child: CircleAvatar(
+                                  radius: 70.0,
+                                  backgroundColor: Colors.transparent,
+                                  child: Image.asset(
+                                    ImageRes.mainLogo,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.54,
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: AnimatedContainer(
+                                    width: viewModel.isShowIndicator ? 48 : 170,
+                                    height: 48,
+                                    duration: Duration(milliseconds: 300),
+                                    child: RaisedButton(
+                                      padding: EdgeInsets.all(16.0),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0)),
+                                      color: Theme.of(context).primaryColor,
+                                      textColor: Colors.white,
+                                      child: viewModel.isShowIndicator
+                                          ? SizedBox(
+                                              height: 48,
+                                              width: 48,
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(Colors.white),
+                                                value: null,
+                                                strokeWidth: 1.0,
+                                              ),
+                                            )
+                                          : Text("Авторизироваться"),
+                                      onPressed: () async {
+                                        await viewModel
+                                            .signInWithEmailAndPassword(context);
+                                        // Navigator.pushReplacementNamed(
+                                        //     context, '/start_screen');
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Нет аккаунта?",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              SizedBox(width: 10.0),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, "/registration_screen");
+                                },
+                                child: Text(
+                                  "Зарегистрируйтесь",
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      }),
     );
+  }
+}
+
+class RoundedDiagonalPathClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path()
+      ..lineTo(0.0, size.height)
+      ..lineTo(size.width, size.height)
+      ..lineTo(size.width, 0.0)
+      ..quadraticBezierTo(size.width, 0.0, size.width - 20.0, 0.0)
+      ..lineTo(40.0, 70.0)
+      ..quadraticBezierTo(10.0, 85.0, 0.0, 120.0)
+      ..close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
   }
 }
 

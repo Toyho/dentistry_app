@@ -15,6 +15,21 @@ class StartScreenViewModel extends ChangeNotifier {
   PushNotification? notificationInfo;
 
   void initViewModel(BuildContext context) async {
+    Future.delayed(const Duration(seconds: 10), () {
+      flutterLocalNotificationsPlugin.show(
+          12,
+          "Привет!",
+          "Это тестовое локальное оповещение, которое показывается через 10 секунд после авторизации",
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              color: Colors.blue,
+              playSound: true,
+              icon: '@mipmap/ic_launcher',
+            ),
+          ));
+    });
     registerNotification();
     checkForInitialMessage();
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {

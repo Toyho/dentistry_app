@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:dentistry_app/screens/doctors/doctorDetailInfo/detail_info_doctor.dart';
 import 'package:dentistry_app/screens/login/login_screen.dart';
+import 'package:dentistry_app/screens/registration/registration_screen.dart';
 import 'package:dentistry_app/screens/startScreen/start_screen.dart';
 import 'package:dentistry_app/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -101,6 +102,17 @@ class MyApp extends StatelessWidget {
                   pageBuilder: (context, animation, secondaryAnimation) =>
                       const StartScreen(),
                   transitionDuration: Duration(milliseconds: 700),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+                    _leftSideTransitionScreen(context, animation, secondaryAnimation, child),
+                  settings: routeSettings,
+                );
+              }
+            case "registration_screen":
+              {
+                return PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const RegistrationScreen(),
+                  transitionDuration: Duration(milliseconds: 200),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) =>
                     _leftSideTransitionScreen(context, animation, secondaryAnimation, child),
                   settings: routeSettings,
