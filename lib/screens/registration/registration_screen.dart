@@ -164,7 +164,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                       ),
                                     ),
                                   ),
-                                  Container(
+                                  SizedBox(
                                     height: MediaQuery.of(context).size.height * 0.54,
                                     child: Align(
                                       alignment: Alignment.bottomCenter,
@@ -176,7 +176,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                         textColor: Colors.white,
                                         child: Text("Зарегистрироваться"),
                                         onPressed: () async {
-                                          viewModel.register();
+                                          viewModel.validationRegist();
                                         },
                                       ),
                                     ),

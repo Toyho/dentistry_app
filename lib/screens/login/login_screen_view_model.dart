@@ -37,7 +37,7 @@ class LoginScreenViewModel extends ChangeNotifier {
     }
     on Exception catch (_) {
       print(_);
-      Future.delayed(Duration(seconds: 2), (){
+      Future.delayed(const Duration(seconds: 2), (){
         isShowIndicator = false;
         notifyListeners();
       });

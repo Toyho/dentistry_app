@@ -112,7 +112,7 @@ class MyApp extends StatelessWidget {
                 return PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) =>
                       const RegistrationScreen(),
-                  transitionDuration: Duration(milliseconds: 200),
+                  transitionDuration: Duration(milliseconds: 700),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) =>
                     _leftSideTransitionScreen(context, animation, secondaryAnimation, child),
                   settings: routeSettings,
