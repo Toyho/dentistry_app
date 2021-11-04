@@ -13,12 +13,13 @@ import 'package:overlay_support/overlay_support.dart';
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // title
-    description: 'This channel is used for important notifications.', // description
+    description: 'This channel is used for important notifications.',
+    // description
     importance: Importance.high,
     playSound: true);
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -32,7 +33,8 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
@@ -102,8 +104,10 @@ class MyApp extends StatelessWidget {
                   pageBuilder: (context, animation, secondaryAnimation) =>
                       const StartScreen(),
                   transitionDuration: Duration(milliseconds: 700),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-                    _leftSideTransitionScreen(context, animation, secondaryAnimation, child),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) =>
+                          _leftSideTransitionScreen(
+                              context, animation, secondaryAnimation, child),
                   settings: routeSettings,
                 );
               }
@@ -113,8 +117,10 @@ class MyApp extends StatelessWidget {
                   pageBuilder: (context, animation, secondaryAnimation) =>
                       const RegistrationScreen(),
                   transitionDuration: Duration(milliseconds: 700),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-                    _leftSideTransitionScreen(context, animation, secondaryAnimation, child),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) =>
+                          _leftSideTransitionScreen(
+                              context, animation, secondaryAnimation, child),
                   settings: routeSettings,
                 );
               }
@@ -122,10 +128,12 @@ class MyApp extends StatelessWidget {
               {
                 return PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) =>
-                  const LoginScreen(),
+                      const LoginScreen(),
                   transitionDuration: Duration(milliseconds: 200),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-                      _rightSideTransitionScreen(context, animation, secondaryAnimation, child),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) =>
+                          _rightSideTransitionScreen(
+                              context, animation, secondaryAnimation, child),
                   settings: routeSettings,
                 );
               }

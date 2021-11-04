@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:dentistry_app/screens/appointmentWithDoctor/appointment_with_doctor.dart';
 import 'package:dentistry_app/screens/doctors/doctorsList/doctors_screen.dart';
 import 'package:dentistry_app/resources/colors_res.dart';
 import 'package:dentistry_app/screens/startScreen/start_screen_view_model.dart';
@@ -43,10 +44,12 @@ class _StartScreenState extends State<StartScreen> {
             body: PageView(
               physics: NeverScrollableScrollPhysics(),
               controller: viewModel.pageController,
-              children: const [MainScreen(), TechnicalWork(), DoctorsScreen()],
+              children: const [MainScreen(), TechnicalWork(), AppointmentWithDoctor(), TechnicalWork(), DoctorsScreen()],
             ),
-            drawer: _buildDrawer(context),
+            drawer: _buildDrawer(context, viewModel),
             bottomNavigationBar: BottomNavigationBar(
+              selectedFontSize: 12,
+              type: BottomNavigationBarType.fixed,
               backgroundColor: Theme.of(context).primaryColor,
               selectedItemColor: ColorsRes.fromHex(ColorsRes.whiteColor),
               showUnselectedLabels: false,
@@ -55,6 +58,10 @@ class _StartScreenState extends State<StartScreen> {
                     icon: Icon(Icons.home), label: "Главная"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.message), label: "Сообщения"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.add_circle), label: "Записаться"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.list_alt), label: "Мои записи"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.medical_services), label: "Врачи"),
               ],
@@ -66,7 +73,37 @@ class _StartScreenState extends State<StartScreen> {
   }
 }
 
-_buildDrawer(BuildContext context) {
+// SliverToBoxAdapter _buildSlider() {
+//   return SliverToBoxAdapter(
+//     child: Stack(
+//       children: <Widget>[
+//         Container(
+//           height: 200,
+//           child: Swiper(
+//             itemCount: sliderItems.length,
+//             autoplay: true,
+//             curve: Curves.easeIn,
+//             itemBuilder: (BuildContext context, int index) {
+//               return PNetworkImage(sliderItems[index], fit: BoxFit.cover);
+//             },
+//           ),
+//         ),
+//         Container(
+//           height: 200,
+//           color: Colors.black.withOpacity(0.5),
+//         ),
+//         Positioned(
+//           bottom: 20,
+//           left: 20,
+//           child: Text("Heavy discount on meals today only.",
+//               style: TextStyle(color: Colors.white)),
+//         )
+//       ],
+//     ),
+//   );
+// }
+
+_buildDrawer(BuildContext context, StartScreenViewModel viewModel) {
   return ClipPath(
     clipper: OvalRightBorderClipper(),
     child: Drawer(
@@ -88,6 +125,7 @@ _buildDrawer(BuildContext context) {
                       color: ColorsRes.fromHex(ColorsRes.whiteColor),
                     ),
                     onPressed: () {
+                      viewModel.logout(context);
                       Navigator.pushNamedAndRemoveUntil(
                           context, '/logout', (r) => false);
                     },

@@ -122,7 +122,7 @@ class _MainScreenState extends State<MainScreen> with AutomaticKeepAliveClientMi
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: FutureBuilder(
-                        future: generateMarkers([_kMapCenter]),
+                        future: Future.delayed(Duration(milliseconds: 700), () => generateMarkers([_kMapCenter])),
                         builder: (BuildContext context,
                             AsyncSnapshot<Set<Marker>> snapshot) {
                           Widget child;

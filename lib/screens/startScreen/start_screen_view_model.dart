@@ -2,13 +2,16 @@ import 'package:dentistry_app/models/push_notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
 
 class StartScreenViewModel extends ChangeNotifier {
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   int currentIndex = 0;
-  List<String> listBottomBar = ["Главная", "Сообщения", "Врачи"];
+  List<String> listBottomBar = ["Главная", "Сообщения", "Записаться на приём", "Мои записи", "Врачи"];
   PageController pageController = PageController();
   late final FirebaseMessaging _messaging;
   int totalNotifications = 0;
@@ -118,6 +121,13 @@ class StartScreenViewModel extends ChangeNotifier {
     currentIndex = index;
     pageController.jumpToPage(index);
     notifyListeners();
+  }
+
+  void logout(BuildContext context) async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.remove('uid_account');
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/logout', (r) => false);
   }
   // notifyListeners();
 }

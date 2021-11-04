@@ -19,6 +19,12 @@ class _LoginScreenState extends State<LoginScreen> {
   LoginScreenViewModel viewModel = LoginScreenViewModel();
 
   @override
+  void initState() {
+    super.initState();
+    viewModel.initState(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => viewModel,
@@ -204,11 +210,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                               ),
                                             )
                                           : Text("Авторизироваться"),
-                                      onPressed: () async {
-                                        await viewModel
-                                            .signInWithEmailAndPassword(context);
-                                        // Navigator.pushReplacementNamed(
-                                        //     context, '/start_screen');
+                                      onPressed: () {
+                                        viewModel.validationAuth(context);
                                       },
                                     ),
                                   ),
