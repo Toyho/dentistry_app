@@ -104,5 +104,23 @@ class RegistrationScreenViewModel extends ChangeNotifier {
     }
   }
 
+  void validationRegistUnitTest() {
+    isShowIndicator = true;
+    notifyListeners();
+    isErrorValidation = false;
+    if (passwordController.text != confirmPasswordController.text) {
+      isErrorValidation = true;
+    }
+    if (passwordController.text.length < 6) {
+      isErrorValidation = true;
+    }
+    if (emailController.text.isEmpty) {
+      isErrorValidation = true;
+    }
+    if (isErrorValidation) {
+      isShowIndicator = false;
+    }
+  }
+
 // notifyListeners();
 }

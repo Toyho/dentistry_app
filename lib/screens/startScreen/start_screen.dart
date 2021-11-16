@@ -5,6 +5,7 @@ import 'package:dentistry_app/resources/colors_res.dart';
 import 'package:dentistry_app/screens/startScreen/start_screen_view_model.dart';
 import 'package:dentistry_app/screens/technical_work.dart';
 import 'package:dentistry_app/widgets/oval_right_clipper.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class _StartScreenState extends State<StartScreen> {
   @override
   void initState() {
     super.initState();
+    Firebase.initializeApp();
     viewModel.initViewModel(context);
   }
 

@@ -1,4 +1,5 @@
 import 'package:dentistry_app/models/push_notification.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -18,6 +19,7 @@ class StartScreenViewModel extends ChangeNotifier {
   PushNotification? notificationInfo;
 
   void initViewModel(BuildContext context) async {
+    await Firebase.initializeApp();
     Future.delayed(const Duration(seconds: 10), () {
       flutterLocalNotificationsPlugin.show(
           12,
