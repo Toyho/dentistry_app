@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoginScreenViewModel extends ChangeNotifier {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  late final FirebaseAuth _auth;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -18,6 +18,8 @@ class LoginScreenViewModel extends ChangeNotifier {
   bool isShowIndicator = false;
 
   Future<void> initState(BuildContext context) async {
+    await Firebase.initializeApp();
+    _auth = FirebaseAuth.instance;
     final SharedPreferences prefs = await _prefs;
     if (prefs.getString('uid_account') != null) {
       Navigator.pushReplacementNamed(context, '/start_screen');

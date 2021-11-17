@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 class RegistrationScreenViewModel extends ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseDatabase _fb = FirebaseDatabase.instance;
+  late final FirebaseAuth _auth;
+  late final FirebaseDatabase _fb;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -18,6 +19,12 @@ class RegistrationScreenViewModel extends ChangeNotifier {
 
   bool isShowIndicator = false;
   late bool isErrorValidation;
+
+  void initState(BuildContext context) async {
+    await Firebase.initializeApp();
+    _auth = FirebaseAuth.instance;
+    _fb = FirebaseDatabase.instance;
+  }
 
   Future<void> register(BuildContext context) async {
     notifyListeners();

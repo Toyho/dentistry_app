@@ -20,6 +20,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   RegistrationScreenViewModel viewModel = RegistrationScreenViewModel();
 
   @override
+  void initState() {
+    super.initState();
+    viewModel.initState(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => viewModel,
@@ -158,14 +164,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                                   color: Colors.white,
                                                 )),
                                           )),
-                                      Container(
-                                        child: Divider(
-                                          color: Colors.white,
+                                      Flexible(
+                                        child: Container(
+                                          child: Divider(
+                                            color: Colors.white,
+                                          ),
+                                          padding: EdgeInsets.only(
+                                              left: 20.0,
+                                              right: 20.0,
+                                              bottom: 10.0),
                                         ),
-                                        padding: EdgeInsets.only(
-                                            left: 20.0,
-                                            right: 20.0,
-                                            bottom: 10.0),
                                       ),
                                     ],
                                   ),

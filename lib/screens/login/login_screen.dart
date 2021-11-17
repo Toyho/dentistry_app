@@ -18,6 +18,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   LoginScreenViewModel viewModel = LoginScreenViewModel();
 
+  static const navigateToRegistrationButtonKey = Key('navigateToRegistration');
+
   @override
   void initState() {
     super.initState();
@@ -231,6 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               SizedBox(width: 10.0),
                               GestureDetector(
+                                key: navigateToRegistrationButtonKey,
                                 onTap: () {
                                   Navigator.pushNamed(
                                       context, "/registration_screen");
