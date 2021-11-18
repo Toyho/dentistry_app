@@ -46,7 +46,13 @@ class _StartScreenState extends State<StartScreen> {
             body: PageView(
               physics: NeverScrollableScrollPhysics(),
               controller: viewModel.pageController,
-              children: const [MainScreen(), TechnicalWork(), AppointmentWithDoctor(), TechnicalWork(), DoctorsScreen()],
+              children: const [
+                MainScreen(),
+                TechnicalWork(),
+                AppointmentWithDoctor(),
+                TechnicalWork(),
+                DoctorsScreen()
+              ],
             ),
             drawer: _buildDrawer(context, viewModel),
             bottomNavigationBar: BottomNavigationBar(
@@ -74,36 +80,6 @@ class _StartScreenState extends State<StartScreen> {
         }));
   }
 }
-
-// SliverToBoxAdapter _buildSlider() {
-//   return SliverToBoxAdapter(
-//     child: Stack(
-//       children: <Widget>[
-//         Container(
-//           height: 200,
-//           child: Swiper(
-//             itemCount: sliderItems.length,
-//             autoplay: true,
-//             curve: Curves.easeIn,
-//             itemBuilder: (BuildContext context, int index) {
-//               return PNetworkImage(sliderItems[index], fit: BoxFit.cover);
-//             },
-//           ),
-//         ),
-//         Container(
-//           height: 200,
-//           color: Colors.black.withOpacity(0.5),
-//         ),
-//         Positioned(
-//           bottom: 20,
-//           left: 20,
-//           child: Text("Heavy discount on meals today only.",
-//               style: TextStyle(color: Colors.white)),
-//         )
-//       ],
-//     ),
-//   );
-// }
 
 _buildDrawer(BuildContext context, StartScreenViewModel viewModel) {
   return ClipPath(
@@ -133,19 +109,24 @@ _buildDrawer(BuildContext context, StartScreenViewModel viewModel) {
                     },
                   ),
                 ),
-                Container(
-                  height: 110,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(colors: [
-                        ColorsRes.fromHex(ColorsRes.whiteColor),
-                        ColorsRes.fromHex(ColorsRes.primaryColor)
-                      ])),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(
-                        "https://i.pinimg.com/736x/ef/83/c3/ef83c388247b4c5784e2ae9cea604fd2.jpg"),
+                GestureDetector(
+                  onTap: () async => viewModel.pickImageFromGallery(context),
+                  child: Container(
+                    height: 110,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(colors: [
+                          ColorsRes.fromHex(ColorsRes.whiteColor),
+                          ColorsRes.fromHex(ColorsRes.primaryColor)
+                        ])),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: viewModel.croppedImage == null
+                          ? NetworkImage(
+                              "https://i.pinimg.com/736x/ef/83/c3/ef83c388247b4c5784e2ae9cea604fd2.jpg")
+                          : FileImage(viewModel.croppedImage!) as ImageProvider,
+                    ),
                   ),
                 ),
                 SizedBox(height: 5.0),

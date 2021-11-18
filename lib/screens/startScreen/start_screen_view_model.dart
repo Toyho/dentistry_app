@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:dentistry_app/models/push_notification.dart';
+import 'package:dentistry_app/resources/colors_res.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
@@ -17,6 +22,10 @@ class StartScreenViewModel extends ChangeNotifier {
   late final FirebaseMessaging _messaging;
   int totalNotifications = 0;
   PushNotification? notificationInfo;
+
+  ImagePicker picker = ImagePicker();
+  File? imagePick;
+  File? croppedImage;
 
   void initViewModel(BuildContext context) async {
     await Firebase.initializeApp();
@@ -57,6 +66,36 @@ class StartScreenViewModel extends ChangeNotifier {
             });
       }
     });
+  }
+  
+  Future<void> pickImageFromGallery(BuildContext context) async {
+    final XFile? pickerFile = await picker.pickImage(source: ImageSource.gallery);
+    imagePick = File(pickerFile!.path);
+
+    croppedImage = await ImageCropper.cropImage(
+      sourcePath: imagePick!.path,
+      maxWidth: 1080,
+      maxHeight: 1080,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Редактирование',
+            toolbarColor: ColorsRes.fromHex(ColorsRes.primaryColor),
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            hideBottomControls: true,
+            lockAspectRatio: true),
+        iosUiSettings: const IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        )
+    );
+
+    notifyListeners();
   }
 
   Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
