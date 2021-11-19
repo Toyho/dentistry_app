@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:dentistry_app/models/user_info.dart';
 import 'package:dentistry_app/screens/appointmentWithDoctor/appointment_with_doctor.dart';
 import 'package:dentistry_app/screens/doctors/doctorsList/doctors_screen.dart';
 import 'package:dentistry_app/resources/colors_res.dart';
@@ -93,66 +94,79 @@ _buildDrawer(BuildContext context, StartScreenViewModel viewModel) {
         width: 300,
         child: SafeArea(
           child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.logout,
-                      color: ColorsRes.fromHex(ColorsRes.whiteColor),
-                    ),
-                    onPressed: () {
-                      viewModel.logout(context);
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/logout', (r) => false);
-                    },
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async => viewModel.pickImageFromGallery(context),
-                  child: Container(
-                    height: 110,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(colors: [
-                          ColorsRes.fromHex(ColorsRes.whiteColor),
-                          ColorsRes.fromHex(ColorsRes.primaryColor)
-                        ])),
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: viewModel.croppedImage == null
-                          ? NetworkImage(
-                              "https://i.pinimg.com/736x/ef/83/c3/ef83c388247b4c5784e2ae9cea604fd2.jpg")
-                          : FileImage(viewModel.croppedImage!) as ImageProvider,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 5.0),
-                Text(
-                  "Имя Фамилия",
-                  style: TextStyle(
-                      color: ColorsRes.fromHex(ColorsRes.whiteColor),
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  "электронный_адрес@gmail.com",
-                  style: TextStyle(
-                      color: ColorsRes.fromHex(ColorsRes.whiteColor),
-                      fontSize: 16.0),
-                ),
-                SizedBox(height: 30.0),
-                _buildRow(Icons.person_pin, "Мой профиль"),
-                _buildDivider(),
-                _buildRow(Icons.notifications, "Оповещения", showBadge: true),
-                _buildDivider(),
-                _buildRow(Icons.settings, "Настройки"),
-                _buildDivider(),
-                _buildRow(Icons.info_outline, "Помощь"),
-                _buildDivider(),
-              ],
+            child: StreamBuilder(
+              stream: viewModel.database!.child('users').child('w0u31TcoRKccOITstudD1kg03sI2').onValue,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                UserInfo? userInfo;
+                if (snapshot.hasData) {
+                  userInfo = UserInfo.fromJson(
+                      (snapshot.data!).snapshot.value);
+                  return Column(
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.logout,
+                            color: ColorsRes.fromHex(ColorsRes.whiteColor),
+                          ),
+                          onPressed: () {
+                            viewModel.logout(context);
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/logout', (r) => false);
+                          },
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async => viewModel.pickImageFromGallery(context),
+                        child: Container(
+                          height: 110,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(colors: [
+                                ColorsRes.fromHex(ColorsRes.whiteColor),
+                                ColorsRes.fromHex(ColorsRes.primaryColor)
+                              ])),
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: viewModel.croppedImage == null
+                                ? NetworkImage(
+                                "https://i.pinimg.com/736x/ef/83/c3/ef83c388247b4c5784e2ae9cea604fd2.jpg")
+                                : FileImage(viewModel.croppedImage!) as ImageProvider,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        "Имя Фамилия",
+                        style: TextStyle(
+                            color: ColorsRes.fromHex(ColorsRes.whiteColor),
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        userInfo.email as String,
+                        style: TextStyle(
+                            color: ColorsRes.fromHex(ColorsRes.whiteColor),
+                            fontSize: 16.0),
+                      ),
+                      SizedBox(height: 30.0),
+                      _buildRow(Icons.person_pin, "Мой профиль"),
+                      _buildDivider(),
+                      _buildRow(Icons.notifications, "Оповещения", showBadge: true),
+                      _buildDivider(),
+                      _buildRow(Icons.settings, "Настройки"),
+                      _buildDivider(),
+                      _buildRow(Icons.info_outline, "Помощь"),
+                      _buildDivider(),
+                    ],
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+              },
             ),
           ),
         ),

@@ -41,7 +41,7 @@ class RegistrationScreenViewModel extends ChangeNotifier {
         _fb.reference().child("users").child(user!.uid).set({
           'email': _userEmail,
           'password': passwordController.text,
-          "registration date": formattedDate
+          "registration_date": formattedDate
         });
         isShowIndicator = false;
         notifyListeners();

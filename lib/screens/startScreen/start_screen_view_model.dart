@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dentistry_app/models/push_notification.dart';
 import 'package:dentistry_app/resources/colors_res.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -16,12 +17,16 @@ class StartScreenViewModel extends ChangeNotifier {
 
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
+  DatabaseReference? database = FirebaseDatabase.instance.reference();
+
+
   int currentIndex = 0;
   List<String> listBottomBar = ["Главная", "Сообщения", "Записаться на приём", "Мои записи", "Врачи"];
   PageController pageController = PageController();
   late final FirebaseMessaging _messaging;
   int totalNotifications = 0;
   PushNotification? notificationInfo;
+  String? uid_account;
 
   ImagePicker picker = ImagePicker();
   File? imagePick;
@@ -29,6 +34,8 @@ class StartScreenViewModel extends ChangeNotifier {
 
   void initViewModel(BuildContext context) async {
     await Firebase.initializeApp();
+    final SharedPreferences prefs = await _prefs;
+    uid_account = prefs.getString('uid_account');
     Future.delayed(const Duration(seconds: 10), () {
       flutterLocalNotificationsPlugin.show(
           12,

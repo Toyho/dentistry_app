@@ -2,6 +2,7 @@
 import 'package:dentistry_app/screens/doctors/doctorDetailInfo/detail_info_doctor.dart';
 import 'package:dentistry_app/screens/login/login_screen.dart';
 import 'package:dentistry_app/screens/registration/registration_screen.dart';
+import 'package:dentistry_app/screens/splashScreen/splash_screen.dart';
 import 'package:dentistry_app/screens/startScreen/start_screen.dart';
 import 'package:dentistry_app/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -83,7 +84,7 @@ class MyApp extends StatelessWidget {
         theme: lightThemeData(context),
         initialRoute: '/',
         routes: {
-          '/': (context) => const LoginScreen(),
+          '/': (context) => const SplashScreen(),
           // '/start_screen': (context) => const StartScreen(),
           // '/detail_info_doctor': (context) => DetailInfoDoctor(),
         },
@@ -95,6 +96,19 @@ class MyApp extends StatelessWidget {
               {
                 return MaterialPageRoute(
                   builder: (context) => DetailInfoDoctor(index: path[2]),
+                  settings: routeSettings,
+                );
+              }
+            case "login_screen":
+              {
+                return PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const LoginScreen(),
+                  transitionDuration: Duration(milliseconds: 700),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) =>
+                          _leftSideTransitionScreen(
+                              context, animation, secondaryAnimation, child),
                   settings: routeSettings,
                 );
               }
