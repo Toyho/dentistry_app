@@ -39,9 +39,9 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
 
     await tester.runAsync(() async {
-      await tester.pumpWidget(const MaterialApp(
+      await tester.pumpWidget(MaterialApp(
         home: Material(
-          child: StartScreen(),
+          child: StartScreen(uid: "w0u31TcoRKccOITstudD1kg03sI2"),
         ),
       ));
 

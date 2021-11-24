@@ -9,9 +9,10 @@ class SplashScreenViewModel extends ChangeNotifier {
 
   Future<void> initState(BuildContext context) async {
     final SharedPreferences prefs = await _prefs;
+    String? uid = prefs.getString('uid_account');
     Future.delayed(const Duration(seconds: 2), () {
-      if (prefs.getString('uid_account') != null) {
-        Navigator.pushReplacementNamed(context, '/start_screen');
+      if (uid != null) {
+        Navigator.pushReplacementNamed(context, '/start_screen/$uid');
       } else {
         Navigator.pushReplacementNamed(context, '/login_screen');
       }

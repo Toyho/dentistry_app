@@ -12,7 +12,6 @@ class LoginScreenViewModel extends ChangeNotifier {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  late String _userEmail;
   late final User? user;
   late bool isErrorValidation;
   bool isShowIndicator = false;
@@ -20,10 +19,6 @@ class LoginScreenViewModel extends ChangeNotifier {
   Future<void> initState(BuildContext context) async {
     await Firebase.initializeApp();
     _auth = FirebaseAuth.instance;
-    final SharedPreferences prefs = await _prefs;
-    if (prefs.getString('uid_account') != null) {
-      Navigator.pushReplacementNamed(context, '/start_screen');
-    }
   }
 
   void validationAuth(BuildContext context) {
@@ -57,12 +52,11 @@ class LoginScreenViewModel extends ChangeNotifier {
           .user;
 
       if (user != null) {
-        _userEmail = user.email!;
         prefs.setString("uid_account", user.uid);
         Future.delayed(Duration(seconds: 2), () {
           isShowIndicator = false;
           notifyListeners();
-          Navigator.pushReplacementNamed(context, '/start_screen');
+          Navigator.pushReplacementNamed(context, '/start_screen/${user.uid}');
         });
       }
     } on FirebaseAuthException catch (error) {

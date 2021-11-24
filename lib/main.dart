@@ -116,7 +116,7 @@ class MyApp extends StatelessWidget {
               {
                 return PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) =>
-                      const StartScreen(),
+                      StartScreen(uid: path[2],),
                   transitionDuration: Duration(milliseconds: 700),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) =>

@@ -13,7 +13,9 @@ import 'package:provider/provider.dart';
 import '../main_screen.dart';
 
 class StartScreen extends StatefulWidget {
-  const StartScreen({Key? key}) : super(key: key);
+  String uid;
+
+  StartScreen({Key? key, required this.uid}) : super(key: key);
 
   @override
   _StartScreenState createState() {
@@ -55,7 +57,7 @@ class _StartScreenState extends State<StartScreen> {
                 DoctorsScreen()
               ],
             ),
-            drawer: _buildDrawer(context, viewModel),
+            drawer: _buildDrawer(context, viewModel, widget.uid),
             bottomNavigationBar: BottomNavigationBar(
               selectedFontSize: 12,
               type: BottomNavigationBarType.fixed,
@@ -82,7 +84,7 @@ class _StartScreenState extends State<StartScreen> {
   }
 }
 
-_buildDrawer(BuildContext context, StartScreenViewModel viewModel) {
+_buildDrawer(BuildContext context, StartScreenViewModel viewModel, String uid) {
   return ClipPath(
     clipper: OvalRightBorderClipper(),
     child: Drawer(
@@ -95,7 +97,7 @@ _buildDrawer(BuildContext context, StartScreenViewModel viewModel) {
         child: SafeArea(
           child: SingleChildScrollView(
             child: StreamBuilder(
-              stream: viewModel.database!.child('users').child('w0u31TcoRKccOITstudD1kg03sI2').onValue,
+              stream: viewModel.database!.child('users').child(uid).onValue,
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 UserInfo? userInfo;
                 if (snapshot.hasData) {
